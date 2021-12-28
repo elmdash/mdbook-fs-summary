@@ -1,5 +1,8 @@
 # mdbook-fs-summary
 
+[![crates.io](https://img.shields.io/crates/v/mdbook-fs-summary.svg)](https://crates.io/crates/mdbook-fs-summary)
+[![LICENSE](https://img.shields.io/github/license/elmdash/mdbook-fs-summary.svg)](LICENSE)
+
 A preprocessor that generates a summary from the file structure of your book rather than using an explicit `SUMMARY.md` file.
 
 ### Benefits
@@ -36,6 +39,8 @@ These conventions should create a filesystem structure that, when sorted alphanu
 
 You _must_ create a dummy `SUMMARY.md`, otherwise `mdbook` will error out before the preprocessors get called. (The contents aren't important. It can just have `# SUMMARY` as the first line.)
 
+Install the project with cargo. The current version is <code>v<span id="version">0.1.0</span></code>.
+
 ```
 cargo install mdbook-fs-summary
 ```
@@ -50,4 +55,4 @@ There are no configurable options right now.
 
 ### Alternatives
 
-* [mdbook-auto-gen-summary](https://crates.io/crates/mdbook-auto-gen-summary) - Similar goals with different conventions and writes the resulting table of contents to`SUMMARY.md`
+* [mdbook-auto-gen-summary](https://crates.io/crates/mdbook-auto-gen-summary) - Similar goals with different conventions and writes the resulting table of contents to`SUMMARY.md`. 

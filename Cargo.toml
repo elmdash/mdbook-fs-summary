@@ -8,7 +8,6 @@ repository = "https://github.com/elmdash/mdbook-fs-summary.git"
 homepage = "https://crates.io/crates/mdbook-fs-summary"
 documentation = "https://crates.io/crates/mdbook-fs-summary"
 license = "MIT"
-license-file = "LICENSE"
 readme = "README.md"
 keywords = ["mdbook", "summary", "markdown", "static"]
 

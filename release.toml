@@ -1,0 +1,13 @@
+push = false
+tag-name = "{{prefix}}{{version}}"
+tag-prefix = "v"
+dev-version = false
+pre-release-commit-message = "version {{version}}"
+pre-release-replacements = [
+    {file="README.md", search="<span id=\"version\">[a-z0-9\\.-]+</span>", replace="<span id=\"version\">{{version}}</span>"},
+    {file="CHANGELOG.md", search="Unreleased", replace="{{version}}", min=1},
+    {file="CHANGELOG.md", search="\\.\\.\\.HEAD", replace="...{{tag_name}}", exactly=1},
+    {file="CHANGELOG.md", search="Coming Soon", replace="{{date}}", min=1},
+    {file="CHANGELOG.md", search="<!-- next-header -->", replace="<!-- next-header -->\n## [Unreleased] - Coming Soon\n", exactly=1},
+    {file="CHANGELOG.md", search="<!-- next-url -->", replace="<!-- next-url -->\n[Unreleased]: https://github.com/elmdash/mdbook-fs-summary/compare/{{tag_name}}...HEAD", exactly=1},
+]

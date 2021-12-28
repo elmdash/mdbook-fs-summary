@@ -1,0 +1,12 @@
+[package]
+name = "mdbook-fs-summary"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.51"
+mdbook = { version = "0.4.14", default-features = false }
+semver = "1.0.4"
+serde_json = "1.0.73"

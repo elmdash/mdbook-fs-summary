@@ -4,14 +4,14 @@ A preprocessor that generates a summary from the file structure of your book rat
 
 ### Benefits
 
-Frequently, you want the organization of your files to simply be mirrored in the `SUMMARY.md` file. This is a manual step with the default `mdbook` usage. We can automate this by following a few conventions:
+Frequently, you want the organization of your files to simply be mirrored in the `SUMMARY.md` file rather than have to manually set it yourself. We can automate this by following a few conventions:
 
 - A page that represents the parent folder is called `00.md`
 - Pages and folders are ordered by the numbers in the filename, i.e. `04_cli.md` comes before  `05_agile.md` and the `05_team` folder comes before the `06_docs` folder.
-- Partials start with an underscore (i.e. `_shared.md`) and should not be included in the table of contents.
+- Partials start with an underscore (i.e. `_shared.md`) and should not be included in the table of contents. You can also use an underscore to create a "draft".
 - Page names (rendered in the navigation) come from the first `H1` header of the page. An error is thrown if there is no title.
 - There are no prefix or suffix chapters right now.
-- There are no draft chapters or separators either.
+- There are no separators either.
 
 These conventions should create a filesystem structure that, when sorted alphanumerically, is the same in the final render.
 
@@ -22,7 +22,7 @@ These conventions should create a filesystem structure that, when sorted alphanu
 ├─ 01_linux.md
 ├─ 02_mac.md
 ├─ 03_windows.md
-├─ _common_install.md
+├─ _common_install_tips.md
 03_caveat.md
 04_usage.md/
 ├─ 00.md

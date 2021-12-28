@@ -2,6 +2,15 @@
 name = "mdbook-fs-summary"
 version = "0.1.0"
 edition = "2021"
+authors = ["Peter Sooley"]
+description = "Summary generator for mdbook"
+repository = "https://github.com/elmdash/mdbook-fs-summary.git"
+homepage = "https://crates.io/crates/mdbook-fs-summary"
+documentation = "https://crates.io/crates/mdbook-fs-summary"
+license = "MIT"
+license-file = "LICENSE"
+readme = "README.md"
+keywords = ["mdbook", "summary", "markdown", "static"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

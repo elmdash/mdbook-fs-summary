@@ -1,0 +1,5 @@
+[book]
+title = "Test FS Summary"
+
+[preprocessor.make-summary]
+command = "../target/debug/mdbook-fs-summary"

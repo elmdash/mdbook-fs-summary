@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 <!-- next-header -->
 ## [Unreleased] - Coming Soon
 
+### Fixes
+
+* Directories without any markdown files are intentionally skipped, but that was not the case for directories with _only_ a `00.md` file. That's fixed now.
+
 ## [0.1.1] - 2021-12-28
 
 ### Added

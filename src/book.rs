@@ -63,18 +63,21 @@ fn load_summary_item(entry: fs::DirEntry, book_src: &Path) -> Result<Option<Summ
     if ft.is_dir() {
         let nested_items = load_summary_items(entry.path(), book_src)?;
 
-        // directories with no markdown files are skipped (might contain other assets)
-        if nested_items.is_empty() {
-            return Ok(None);
-        }
-
         let index_file: PathBuf = [entry.path(), PathBuf::from("00.md")].iter().collect();
+
         if !index_file.exists() {
+
+            // directories with no markdown files are skipped (might contain other assets)
+            if nested_items.is_empty() {
+                return Ok(None);
+            }
+
             return Err(anyhow::Error::msg(format!(
                 "missing folder index file: {}",
                 index_file.display()
             )));
         }
+
         let location = index_file.strip_prefix(book_src)?;
 
         return Ok(Some(SummaryItem::Link(Link {

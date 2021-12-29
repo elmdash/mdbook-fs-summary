@@ -40,7 +40,7 @@ fn apply_section_numbers(chapters: &mut [SummaryItem], parent_num: &Vec<u32>) {
 fn load_summary_items<P: AsRef<Path>>(path: P, book_src: &Path) -> Result<Vec<SummaryItem>> {
     // We can't say we're getting the directory contents in order. That means we have to sort them
     // ourselves. Using a BTreeMap gives us that, but also it means the whole tree won't be in
-    // order _until_ after it's all built. That means we can't apply section numbers at this point.
+    // order until _after_ it's all built. That means we can't apply section numbers at this point.
     let mut map = BTreeMap::default();
     let summary_path: PathBuf = [PathBuf::from(book_src), PathBuf::from("SUMMARY.md")]
         .iter()

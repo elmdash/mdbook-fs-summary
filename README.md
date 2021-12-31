@@ -21,11 +21,11 @@ These conventions should create a filesystem structure that, when sorted alphanu
 ```
 01_intro.md
 02_install.md/
-├─ 00.md                                        → chapter index 
+├─ 00.md                          → chapter index 
 ├─ 01_linux.md
-├─ 02_mac.md                                ↓ files sorted naturally
+├─ 02_mac.md                      ↓ files sorted naturally
 ├─ 03_windows.md
-├─ 04__                                          → separator
+├─ 04_______                          → separator
 ├─ 05_post_install.md
 ├─ _common_install_tips.md        → ignored "partial"
 03_caveat.md

@@ -74,7 +74,7 @@ Since these numbers are just our internal convention for sorting, we don't want 
 
 Currently the convention is this: 
 
-> If there are 2 or 3 numbers or upper case letters followed by an underscore, they'll get stripped in the resulting URLs. 
+> If the filename starts with 2 or 3 numbers or upper case letters followed by an underscore, they'll get stripped in the resulting URLs. 
 
 ### Alternatives
 

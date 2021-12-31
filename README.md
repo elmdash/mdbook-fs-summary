@@ -19,6 +19,7 @@ Frequently, you want the organization of your files to simply be mirrored in the
 | Suffix chapters     | `ZZ_final_words.md`                                      | Suffix chapters start with `ZZ`                              |
 | Draft chapters      | `04_advanced_configuration?.md` or `05_administration?/` | Draft pages and folders end with `?`                         |
 | Separators          | `02__` or `02___________`                                | Separators are files that end with two underscores `__`      |
+| Part Titles         | `05_reference_#.md`                                      | Filenames ending in `#` indicate a part title and the title comes from the first `H1` header |
 
 These conventions should create a filesystem structure that, when sorted alphanumerically, is the same in the final render.
 
@@ -34,15 +35,16 @@ These conventions should create a filesystem structure that, when sorted alphanu
 ├─ 05_post_install.md
 ├─ _common_install_tips.md        → ignored "partial"
 03_caveat.md
-04_usage.md/
+04_g_#.md                     → Part title 
+05_usage.md/
 ├─ 00.md
 ├─ 01_basics/
 │  ├─ 00.md
 │  ├─ 01_setup.md
 │  ├─ 02_monitoring.md
-05_administration?/               → draft chapter
+06_administration?/               → draft chapter
 ├─ 00.md
-├─ 01_install?.md                 → ndraft chapter
+├─ 01_install?.md                 → nested draft chapter
 ZZ_final_words.md                 → suffix chapter
 ```
 

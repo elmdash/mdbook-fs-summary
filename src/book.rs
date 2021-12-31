@@ -22,28 +22,38 @@ pub fn load_book(ctx: &PreprocessorContext) -> Result<Book> {
 fn apply_section_numbers(chapters: &mut [BookItem], parent_num: &Vec<u32>) {
     let mut i = 0_u32;
     for chapter in chapters {
-        if let BookItem::Chapter(ref mut chap) = *chapter {
-            if chap.number.is_some() {
+        match chapter {
+            BookItem::PartTitle(title) => {
                 if !parent_num.is_empty() {
-                    eprintln!(
-                        "Warning: prefix and suffix chapters nested under numbered chapters may \
-                        not be supported: {}",
-                        chap.source_path
-                            .as_ref()
-                            .expect(
-                                "there should always be a source file for prefix/suffix chapters"
-                            )
-                            .display()
-                    );
+                    eprintln!("Warning: nested part titles may not be supported {}", title);
                 }
-                chap.number = None;
+            }
+            BookItem::Chapter(ref mut chap) => {
+                if chap.number.is_some() {
+                    if !parent_num.is_empty() {
+                        eprintln!(
+                            "Warning: prefix and suffix chapters nested under numbered chapters may \
+                        not be supported: {}",
+                            chap.source_path
+                                .as_ref()
+                                .expect(
+                                    "there should always be a source file for prefix/suffix chapters"
+                                )
+                                .display()
+                        );
+                    }
+                    chap.number = None;
+                    continue;
+                }
+                i += 1;
+                let mut num = parent_num.clone();
+                num.push(i);
+                apply_section_numbers(&mut chap.sub_items, &num);
+                chap.number = Some(SectionNumber(num));
+            }
+            _ => {
                 continue;
             }
-            i += 1;
-            let mut num = parent_num.clone();
-            num.push(i);
-            apply_section_numbers(&mut chap.sub_items, &num);
-            chap.number = Some(SectionNumber(num));
         }
     }
 }
@@ -148,6 +158,13 @@ fn load_book_item(
         if base_filename.ends_with("__") {
             return Ok(Some(BookItem::Separator));
         }
+
+        if base_filename.ends_with("#") {
+            return Ok(Some(BookItem::PartTitle(load_chapter_title(
+                path.as_path(),
+            )?)));
+        }
+
         // skip partials
         if filename.starts_with("_") {
             return Ok(None);
@@ -169,7 +186,7 @@ fn load_book_item(
             number = Some(SectionNumber::default());
         }
 
-        let name = load_chapter_title(entry.path())?;
+        let name = load_chapter_title(path.as_path())?;
 
         if base_filename.ends_with("?") {
             return Ok(Some(BookItem::Chapter({

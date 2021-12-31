@@ -15,14 +15,32 @@ pub fn load_book(ctx: &PreprocessorContext) -> Result<Book> {
         book.push_item(section);
     }
 
+    // eprintln!("{:#?}", book);
+
     Ok(book)
 }
 
 fn apply_section_numbers(chapters: &mut [BookItem], parent_num: &Vec<u32>) {
     let mut i = 0_u32;
     for chapter in chapters {
-        i += 1;
         if let BookItem::Chapter(ref mut chap) = *chapter {
+            if chap.number.is_some() {
+                if !parent_num.is_empty() {
+                    eprintln!(
+                        "Warning: prefix and suffix chapters nested under numbered chapters may \
+                        not be supported: {}",
+                        chap.source_path
+                            .as_ref()
+                            .expect(
+                                "there should always be a source file for prefix/suffix chapters"
+                            )
+                            .display()
+                    );
+                }
+                chap.number = None;
+                continue;
+            }
+            i += 1;
             let mut num = parent_num.clone();
             num.push(i);
             apply_section_numbers(&mut chap.sub_items, &num);
@@ -97,6 +115,9 @@ fn load_book_item(
         })));
     }
     if ft.is_file() {
+        // for numbered chapters, we initially define it as `None` as they are calculated later
+        let mut number = None;
+
         let os_filename = entry.file_name();
         let filename = os_filename.to_string_lossy();
 
@@ -117,6 +138,12 @@ fn load_book_item(
             return Ok(None);
         }
 
+        if filename.starts_with("00") || filename.starts_with("ZZ") {
+            // little hacky, but we're indicating this has no section number by setting it now
+            // and then unsetting it later. otherwise we need a custom newtype of `BookItem`
+            number = Some(SectionNumber::default());
+        }
+
         let path = entry.path().to_path_buf();
         let source_path = path.strip_prefix(book_src)?;
         let content = fs::read_to_string(path.as_path())
@@ -125,7 +152,7 @@ fn load_book_item(
         return Ok(Some(BookItem::Chapter(Chapter {
             name: load_chapter_title(entry.path())?,
             content,
-            number: None, // we're ignoring numbers anyway
+            number,
             sub_items: Default::default(),
             path: Some(source_path.clone().to_path_buf()),
             source_path: Some(source_path.to_path_buf()),

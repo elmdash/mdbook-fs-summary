@@ -13,19 +13,20 @@ Frequently, you want the organization of your files to simply be mirrored in the
 - Pages and folders are ordered by the numbers in the filename, i.e. `04_cli.md` comes before  `05_agile.md` and the `05_team` folder comes before the `06_docs` folder.
 - Partials start with an underscore (i.e. `_shared.md`) and should not be included in the table of contents. 
 - Page names (rendered in the navigation) come from the first `H1` header of the page. An error is thrown if there is no title.
-- There are no prefix or suffix chapters right now.
+- Prefix chapters start with `00` and suffix chapters start with `ZZ`.
 - Separators are any file that ends in `__` (i.e. `02__` or even `02________`).
 
 These conventions should create a filesystem structure that, when sorted alphanumerically, is the same in the final render.
 
 ```
+00_prologue.md                    → prefix chapter
 01_intro.md
 02_install.md/
 ├─ 00.md                          → chapter index 
 ├─ 01_linux.md
 ├─ 02_mac.md                      ↓ files sorted naturally
 ├─ 03_windows.md
-├─ 04_______                          → separator
+├─ 04_______                      → separator
 ├─ 05_post_install.md
 ├─ _common_install_tips.md        → ignored "partial"
 03_caveat.md
@@ -35,6 +36,7 @@ These conventions should create a filesystem structure that, when sorted alphanu
 │  ├─ 00.md
 │  ├─ 01_setup.md
 │  ├─ 02_monitoring.md
+ZZ_final_words.md                 → sfix chapter
 ```
 
 ### Usage

@@ -14,18 +14,20 @@ Frequently, you want the organization of your files to simply be mirrored in the
 - Partials start with an underscore (i.e. `_shared.md`) and should not be included in the table of contents. You can also use an underscore to create a "draft".
 - Page names (rendered in the navigation) come from the first `H1` header of the page. An error is thrown if there is no title.
 - There are no prefix or suffix chapters right now.
-- There are no separators either.
+- Separators are any file that ends in `__` (i.e. `02__` or even `02________`).
 
 These conventions should create a filesystem structure that, when sorted alphanumerically, is the same in the final render.
 
 ```
 01_intro.md
 02_install.md/
-├─ 00.md
+├─ 00.md                                        → chapter index 
 ├─ 01_linux.md
-├─ 02_mac.md
+├─ 02_mac.md                                ↓ files sorted naturally
 ├─ 03_windows.md
-├─ _common_install_tips.md
+├─ 04__                                          → separator
+├─ 05_post_install.md
+├─ _common_install_tips.md        → ignored "partial"
 03_caveat.md
 04_usage.md/
 ├─ 00.md

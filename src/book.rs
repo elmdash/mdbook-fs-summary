@@ -104,6 +104,10 @@ fn load_book_item(
         if filename == "00.md" {
             return Ok(None);
         }
+        // separators
+        if filename.ends_with("__") {
+            return Ok(Some(BookItem::Separator));
+        }
         // skip partials
         if filename.starts_with("_") {
             return Ok(None);

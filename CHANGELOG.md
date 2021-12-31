@@ -7,6 +7,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 <!-- next-header -->
 ## [Unreleased] - Coming Soon
 
+### Added
+
+* [#2](https://github.com/elmdash/mdbook-fs-summary/issues/2) Provide support for chapter separators using files that end in `__`
+
+### Changed
+
+* No-op refactor to use mdbook's `Book` structures rather than just the `Summary` structures
+
 ## [0.1.2] - 2021-12-29
 
 ### Fixes

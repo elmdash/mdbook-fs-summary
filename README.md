@@ -76,6 +76,8 @@ Currently the convention is this:
 
 > If the filename starts with 2 or 3 numbers or upper case letters followed by an underscore, they'll get stripped in the resulting URLs. 
 
+> ⚠️ This currently breaks support for the default links preprocessor provided by mdbook. [See this pull request.](https://github.com/rust-lang/mdBook/pull/1716)
+
 ### Alternatives
 
 * [mdbook-auto-gen-summary](https://crates.io/crates/mdbook-auto-gen-summary) - Similar goals with different conventions and writes the resulting table of contents to `SUMMARY.md`. 

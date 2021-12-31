@@ -13,6 +13,7 @@ This is a bigger release aiming to encompass more of the default `SUMMARY.md` be
 
 ### Added
 
+* [#1](https://github.com/elmdash/mdbook-fs-summary/issues/1) Convert `00.md` to `index.md` so that URLs show up as `index.html`.
 * [#2](https://github.com/elmdash/mdbook-fs-summary/issues/2) Provide support for chapter separators using files that end in `__`
 * [#3](https://github.com/elmdash/mdbook-fs-summary/issues/3) Provide support for prefix/suffix chapters using `00` and `ZZ` filename prefixes
 * [#4](https://github.com/elmdash/mdbook-fs-summary/issues/4) Provide support for part titles with filenames ending in `#`

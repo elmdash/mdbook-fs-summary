@@ -129,11 +129,13 @@ fn load_book_item(
             .with_context(|| format!("could not read file: {}", index_file.as_path().display()))?;
 
         let source_path = index_file.strip_prefix(book_src)?;
+        let mut cleaned_path = clean_path(source_path);
+        cleaned_path.set_file_name("index.md");
 
         return Ok(Some(BookItem::Chapter({
             let mut c = Chapter::new(&name, content, source_path, parent_names);
             c.sub_items = sub_items;
-            c.path = Some(clean_path(source_path));
+            c.path = Some(cleaned_path);
             c
         })));
     }

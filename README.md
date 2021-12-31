@@ -11,7 +11,7 @@ Frequently, you want the organization of your files to simply be mirrored in the
 
 - A page that represents the parent folder is called `00.md`
 - Pages and folders are ordered by the numbers in the filename, i.e. `04_cli.md` comes before  `05_agile.md` and the `05_team` folder comes before the `06_docs` folder.
-- Partials start with an underscore (i.e. `_shared.md`) and should not be included in the table of contents. You can also use an underscore to create a "draft".
+- Partials start with an underscore (i.e. `_shared.md`) and should not be included in the table of contents. 
 - Page names (rendered in the navigation) come from the first `H1` header of the page. An error is thrown if there is no title.
 - There are no prefix or suffix chapters right now.
 - Separators are any file that ends in `__` (i.e. `02__` or even `02________`).

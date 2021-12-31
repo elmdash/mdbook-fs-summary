@@ -32,7 +32,7 @@ fn handle_preprocessing() -> Result<(), Error> {
     }
 
     let book = book::load_book(&ctx)?;
-    serde_json::to_writer(std::io::stdout(), &book.book)?;
+    serde_json::to_writer(std::io::stdout(), &book)?;
 
     Ok(())
 }

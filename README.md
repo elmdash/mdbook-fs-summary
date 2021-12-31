@@ -9,17 +9,17 @@ A preprocessor that generates a summary from the file structure of your book rat
 
 Frequently, you want the organization of your files to simply be mirrored in the `SUMMARY.md` file rather than have to manually set it yourself. We can automate this by following a few conventions:
 
-| Convention          | Example                                                  | Result                                                       |
-| ------------------- | -------------------------------------------------------- | ------------------------------------------------------------ |
-| Chapter index       | `00.md`                                                  | Represents the page for the parent folder                    |
-| Sorted by filenames | `04_cli.md` or `06_docs/`                                | Use leading numbers to sort pages (though not strictly enforced to have numbers in the filenames like this) |
-| Partials            | `_shared.md`                                             | Partials start with an underscore and will be ignored in the summary |
-| Page titles         | `# Page Title`                                           | Page names (rendered in the navigation) come from the first `H1` header of the page. An error is thrown if there is no title. |
-| Prefix chapters     | `00_prologue.md`                                         | Prefix chapters start with `00` (excluding `00.md`)          |
-| Suffix chapters     | `ZZ_final_words.md`                                      | Suffix chapters start with `ZZ`                              |
-| Draft chapters      | `04_advanced_configuration?.md` or `05_administration?/` | Draft pages and folders end with `?`                         |
-| Separators          | `02__` or `02___________`                                | Separators are files that end with two underscores `__`      |
-| Part Titles         | `05_reference_#.md`                                      | Filenames ending in `#` indicate a part title and the title comes from the first `H1` header |
+| Convention          | Example                                                    | Result                                                       |
+| ------------------- | ---------------------------------------------------------- | ------------------------------------------------------------ |
+| Chapter index       | `00.md`                                                    | Represents the page for the parent folder                    |
+| Sorted by filenames | `04_cli.md` or `06_docs/`                                  | Use leading numbers to sort pages (though not strictly enforced to have numbers in the filenames like this) |
+| Partials            | `_shared.md`                                               | Partials start with an underscore and will be ignored in the summary |
+| Page titles         | `# Page Title`                                             | Page names (rendered in the navigation) come from the first `H1` header of the page. An error is thrown if there is no title. |
+| Prefix chapters     | `00_prologue.md`                                           | Prefix chapters start with `00` (excluding `00.md`)          |
+| Suffix chapters     | `ZZ_final_words.md`                                        | Suffix chapters start with `ZZ`                              |
+| Draft chapters      | `04_advanced_configuration().md` or `05_administration()/` | Draft pages and folders end with `()`                        |
+| Separators          | `02__` or `02___________`                                  | Separators are files that end with two underscores `__`      |
+| Part Titles         | `05_reference_#.md`                                        | Filenames ending in `#` indicate a part title and the title comes from the first `H1` header |
 
 These conventions should create a filesystem structure that, when sorted alphanumerically, is the same in the final render.
 
@@ -42,9 +42,9 @@ These conventions should create a filesystem structure that, when sorted alphanu
 │  ├─ 00.md
 │  ├─ 01_setup.md
 │  ├─ 02_monitoring.md
-06_administration?/               → draft chapter
+06_administration()/              → draft chapter
 ├─ 00.md
-├─ 01_install?.md                 → nested draft chapter
+├─ 01_install().md                → nested draft chapter
 ZZ_final_words.md                 → suffix chapter
 ```
 

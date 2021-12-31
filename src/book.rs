@@ -119,7 +119,7 @@ fn load_book_item(
         parent_names.push(name.clone());
         let sub_items = load_book_items(entry.path(), &parent_names, book_src)?;
 
-        if dir_name.ends_with("?") {
+        if dir_name.ends_with("()") {
             return Ok(Some(BookItem::Chapter({
                 let mut c = Chapter::new_draft(&name, parent_names);
                 c.sub_items = sub_items;
@@ -192,7 +192,7 @@ fn load_book_item(
 
         let name = load_chapter_title(path.as_path())?;
 
-        if base_filename.ends_with("?") {
+        if base_filename.ends_with("()") {
             return Ok(Some(BookItem::Chapter({
                 let mut c = Chapter::new_draft(&name, crumbs.clone());
                 c.number = number;
@@ -256,7 +256,7 @@ fn clean_path<P: AsRef<Path>>(path: P) -> PathBuf {
 }
 
 fn strip_draft_indicator(s: &mut String) {
-    if let Some(stripped) = s.strip_suffix("?") {
+    if let Some(stripped) = s.strip_suffix("()") {
         *s = stripped.to_string();
     }
 }
@@ -276,7 +276,7 @@ mod tests {
 
     #[test]
     fn cleans_drafts() {
-        let p = PathBuf::from("02_hmm/05_here?/02_sure?/06_normal.md");
+        let p = PathBuf::from("02_hmm/05_here()/02_sure()/06_normal.md");
         assert_eq!(clean_path(p), PathBuf::from("hmm/here/sure/normal.md"))
     }
 }

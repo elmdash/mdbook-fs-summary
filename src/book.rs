@@ -100,10 +100,6 @@ fn load_book_item(
         let os_filename = entry.file_name();
         let filename = os_filename.to_string_lossy();
 
-        // skip folder index files (already added when we added the directory)
-        if filename == "00.md" {
-            return Ok(None);
-        }
         // separators
         if filename.ends_with("__") {
             return Ok(Some(BookItem::Separator));
@@ -114,6 +110,10 @@ fn load_book_item(
         }
         // skip non-markdown files
         if !filename.ends_with(".md") {
+            return Ok(None);
+        }
+        // skip folder index files (already added when we added the directory)
+        if filename == "00.md" {
             return Ok(None);
         }
 

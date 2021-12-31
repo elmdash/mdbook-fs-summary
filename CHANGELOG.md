@@ -7,13 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 <!-- next-header -->
 ## [Unreleased] - Coming Soon
 
-This is a bigger release aiming to encompass more of the default `SUMMARY.md` behaviors provided by mdbook. 
-
-> ⚠️ Breaks links hardcoded to `00.html` to prefer `index.html` by default.
+This is a bigger release aiming to encompass more of the default `SUMMARY.md` behaviors provided by mdbook and establish more conventions.
 
 ### Added
 
-* [#1](https://github.com/elmdash/mdbook-fs-summary/issues/1) Convert `00.md` to `index.md` so that URLs show up as `index.html`.
 * [#2](https://github.com/elmdash/mdbook-fs-summary/issues/2) Provide support for chapter separators using files that end in `__`
 * [#3](https://github.com/elmdash/mdbook-fs-summary/issues/3) Provide support for prefix/suffix chapters using `00` and `ZZ` filename prefixes
 * [#4](https://github.com/elmdash/mdbook-fs-summary/issues/4) Provide support for part titles with filenames ending in `#`
@@ -21,7 +18,16 @@ This is a bigger release aiming to encompass more of the default `SUMMARY.md` be
 
 ### Changed
 
-* No-op refactor to use mdbook's `Book` structures rather than just the `Summary` structures
+* [#1](https://github.com/elmdash/mdbook-fs-summary/issues/1) Convert `00.md` to `index.md` so that URLs show up as `index.html`.
+
+  > ⚠️ Breaks links hardcoded to `00.html` to prefer `index.html` by default.
+
+* [#6](https://github.com/elmdash/mdbook-fs-summary/issues/6) Strip number prefixes from final URLs
+
+  > ⚠️ Also breaks links hardcoded with numbering prefixes in favor of stripping prefixes by default: `02_team/01_directory/06_birthdays.md` becomes`team/directory/birthdays.html`.
+  >
+  > This also seems to break the partial includes which relies on the wrong path value.
+
 * Ignore filename extensions when looking for suffix indicators
 
 ## [0.1.2] - 2021-12-29

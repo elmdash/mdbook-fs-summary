@@ -66,6 +66,16 @@ There are no configurable options right now.
 [preprocessor.fs-summary]
 ```
 
+### URL Handling and Number Prefixes
+
+The number prefixes are mostly just a convention for keeping files and folders properly sorted. We don't rely on these numbers internally to generate a summary. You can opt out of having these numbers altogether; your files will just be sorted alphanumerically. 
+
+Since these numbers are just our internal convention for sorting, we don't want to expose these numbers in the URLs produced by mdbook. So in order to strip them out, we have to specify what they are. 
+
+Currently the convention is this: 
+
+> If there are 2 or 3 numbers or upper case letters followed by an underscore, they'll get stripped in the resulting URLs. 
+
 ### Alternatives
 
 * [mdbook-auto-gen-summary](https://crates.io/crates/mdbook-auto-gen-summary) - Similar goals with different conventions and writes the resulting table of contents to `SUMMARY.md`. 

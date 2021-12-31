@@ -280,7 +280,9 @@ name = "mdbook-fs-summary"
 version = "0.1.2"
 dependencies = [
  "anyhow",
+ "lazy_static",
  "mdbook",
+ "regex",
  "semver",
  "serde_json",
 ]

@@ -18,3 +18,5 @@ anyhow = "1.0.51"
 mdbook = { version = "0.4.14", default-features = false }
 semver = "1.0.4"
 serde_json = "1.0.73"
+regex = { version = "1.5.4", default-features = false, features = ["std", "perf"]}
+lazy_static = "1.4.0"

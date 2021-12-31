@@ -1,8 +1,10 @@
 use anyhow::{Context, Result};
+use lazy_static::lazy_static;
 use mdbook::book::{Book, BookItem, Chapter, SectionNumber};
 use mdbook::preprocess::PreprocessorContext;
+use regex::Regex;
 use std::collections::BTreeMap;
-use std::ffi::OsStr;
+use std::ffi::OsString;
 use std::fs;
 use std::path::{Component, Path, PathBuf};
 
@@ -236,30 +238,36 @@ fn load_chapter_title<P: AsRef<Path>>(path: P) -> Result<String> {
 /// Removes indicators from the path (like question marks).
 /// This allows for showing a different path than the actual source path.
 fn clean_path<P: AsRef<Path>>(path: P) -> PathBuf {
-    let mut out = Vec::default();
+    let mut out = PathBuf::new();
     for part in path.as_ref().components() {
         if let Component::Normal(val) = part {
-            let updated = if let Some(mut val_str) = val.to_str() {
-                val_str = strip_draft_indicator(&val_str);
-                OsStr::new(val_str)
-            } else {
-                val
-            };
-
-            out.push(Component::Normal(updated))
-        } else {
-            out.push(part)
+            if let Some(val_str) = val.to_str() {
+                let mut cleaned = String::from(val_str);
+                strip_draft_indicator(&mut cleaned);
+                strip_numbering_prefix(&mut cleaned);
+                out.push(OsString::from(cleaned));
+                continue;
+            }
         }
+
+        out.push(OsString::from(part.as_os_str()));
     }
-    out.iter().collect()
+    out
 }
 
-fn strip_draft_indicator(s: &str) -> &str {
+fn strip_draft_indicator(s: &mut String) {
     if let Some(stripped) = s.strip_suffix("?") {
-        stripped
-    } else {
-        s
+        *s = stripped.to_string();
     }
+}
+
+fn strip_numbering_prefix(s: &mut String) {
+    lazy_static! {
+        static ref RE: Regex = Regex::new("^[0-9A-Z]{2,3}_").unwrap();
+    }
+
+    let stripped = RE.replace(s, "");
+    *s = String::from(stripped);
 }
 
 #[cfg(test)]
@@ -269,9 +277,6 @@ mod tests {
     #[test]
     fn cleans_drafts() {
         let p = PathBuf::from("02_hmm/05_here?/02_sure?/06_normal.md");
-        assert_eq!(
-            clean_path(p),
-            PathBuf::from("02_hmm/05_here/02_sure/06_normal.md")
-        )
+        assert_eq!(clean_path(p), PathBuf::from("hmm/here/sure/normal.md"))
     }
 }

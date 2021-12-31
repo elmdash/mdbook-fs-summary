@@ -36,7 +36,7 @@ These conventions should create a filesystem structure that, when sorted alphanu
 │  ├─ 00.md
 │  ├─ 01_setup.md
 │  ├─ 02_monitoring.md
-ZZ_final_words.md                 → sfix chapter
+ZZ_final_words.md                 → suffix chapter
 ```
 
 ### Usage

@@ -117,12 +117,22 @@ fn load_book_item(
     if ft.is_file() {
         // for numbered chapters, we initially define it as `None` as they are calculated later
         let mut number = None;
+        let path = entry.path().to_path_buf();
 
-        let os_filename = entry.file_name();
-        let filename = os_filename.to_string_lossy();
+        let filename = if let Some(f) = path.file_name() {
+            f.to_string_lossy()
+        } else {
+            // skip files that don't have valid filenames
+            return Ok(None);
+        };
+        let base_filename = if let Some(f) = path.file_stem() {
+            f.to_string_lossy()
+        } else {
+            // skip files that don't have valid filenames
+            return Ok(None);
+        };
 
-        // separators
-        if filename.ends_with("__") {
+        if base_filename.ends_with("__") {
             return Ok(Some(BookItem::Separator));
         }
         // skip partials
@@ -130,8 +140,10 @@ fn load_book_item(
             return Ok(None);
         }
         // skip non-markdown files
-        if !filename.ends_with(".md") {
-            return Ok(None);
+        if let Some(ext) = entry.path().extension() {
+            if ext != "md" {
+                return Ok(None);
+            }
         }
         // skip folder index files (already added when we added the directory)
         if filename == "00.md" {
@@ -144,7 +156,6 @@ fn load_book_item(
             number = Some(SectionNumber::default());
         }
 
-        let path = entry.path().to_path_buf();
         let source_path = path.strip_prefix(book_src)?;
         let content = fs::read_to_string(path.as_path())
             .with_context(|| format!("could not read file: {}", path.as_path().display()))?;

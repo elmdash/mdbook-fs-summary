@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Changed
 
 * No-op refactor to use mdbook's `Book` structures rather than just the `Summary` structures
+* Ignore filename extensions when looking for suffix indicators
 
 ## [0.1.2] - 2021-12-29
 

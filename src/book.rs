@@ -2,8 +2,9 @@ use anyhow::{Context, Result};
 use mdbook::book::{Book, BookItem, Chapter, SectionNumber};
 use mdbook::preprocess::PreprocessorContext;
 use std::collections::BTreeMap;
+use std::ffi::OsStr;
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::{Component, Path, PathBuf};
 
 pub fn load_book(ctx: &PreprocessorContext) -> Result<Book> {
     let root = ctx.config.book.src.as_path();
@@ -14,8 +15,6 @@ pub fn load_book(ctx: &PreprocessorContext) -> Result<Book> {
     for section in sections {
         book.push_item(section);
     }
-
-    // eprintln!("{:#?}", book);
 
     Ok(book)
 }
@@ -79,7 +78,9 @@ fn load_book_item(
 ) -> Result<Option<BookItem>> {
     let ft = entry.file_type()?;
     if ft.is_dir() {
-        let index_file = entry.path().join(PathBuf::from("00.md"));
+        let path = entry.path();
+
+        let index_file = path.join(PathBuf::from("00.md"));
         if !index_file.exists() {
             // directories with no markdown files are skipped (might contain other assets)
             // so it may not be an error not to have an index file anyway
@@ -94,24 +95,36 @@ fn load_book_item(
             )));
         }
 
+        let dir_name = if let Some(f) = path.file_name() {
+            f.to_string_lossy()
+        } else {
+            // skip directories with invalid names
+            return Ok(None);
+        };
+
         let name = load_chapter_title(index_file.as_path())?;
         let mut parent_names = crumbs.clone();
         parent_names.push(name.clone());
         let sub_items = load_book_items(entry.path(), &parent_names, book_src)?;
+
+        if dir_name.ends_with("?") {
+            return Ok(Some(BookItem::Chapter({
+                let mut c = Chapter::new_draft(&name, parent_names);
+                c.sub_items = sub_items;
+                c
+            })));
+        }
 
         let content = fs::read_to_string(index_file.as_path())
             .with_context(|| format!("could not read file: {}", index_file.as_path().display()))?;
 
         let source_path = index_file.strip_prefix(book_src)?;
 
-        return Ok(Some(BookItem::Chapter(Chapter {
-            name,
-            content,
-            number: None, // updated later after tree is sorted properly
-            sub_items,
-            path: Some(source_path.clone().to_path_buf()),
-            source_path: Some(source_path.to_path_buf()),
-            parent_names,
+        return Ok(Some(BookItem::Chapter({
+            let mut c = Chapter::new(&name, content, source_path, parent_names);
+            c.sub_items = sub_items;
+            c.path = Some(clean_path(source_path));
+            c
         })));
     }
     if ft.is_file() {
@@ -156,23 +169,31 @@ fn load_book_item(
             number = Some(SectionNumber::default());
         }
 
+        let name = load_chapter_title(entry.path())?;
+
+        if base_filename.ends_with("?") {
+            return Ok(Some(BookItem::Chapter({
+                let mut c = Chapter::new_draft(&name, crumbs.clone());
+                c.number = number;
+                c
+            })));
+        }
+
         let source_path = path.strip_prefix(book_src)?;
         let content = fs::read_to_string(path.as_path())
             .with_context(|| format!("could not read file: {}", path.as_path().display()))?;
 
-        return Ok(Some(BookItem::Chapter(Chapter {
-            name: load_chapter_title(entry.path())?,
-            content,
-            number,
-            sub_items: Default::default(),
-            path: Some(source_path.clone().to_path_buf()),
-            source_path: Some(source_path.to_path_buf()),
-            parent_names: crumbs.clone(),
+        return Ok(Some(BookItem::Chapter({
+            let mut c = Chapter::new(&name, content, source_path, crumbs.clone());
+            c.path = Some(clean_path(source_path));
+            c.number = number;
+            c
         })));
     }
     Ok(None)
 }
 
+/// Reads the first H1 header in a markdown file to get the title of the chapter
 fn load_chapter_title<P: AsRef<Path>>(path: P) -> Result<String> {
     let contents = fs::read_to_string(path.as_ref())
         .with_context(|| format!("could not read file: {}", path.as_ref().display()))?;
@@ -191,4 +212,47 @@ fn load_chapter_title<P: AsRef<Path>>(path: P) -> Result<String> {
             path.as_ref().display()
         ))
     })
+}
+
+/// Removes indicators from the path (like question marks).
+/// This allows for showing a different path than the actual source path.
+fn clean_path<P: AsRef<Path>>(path: P) -> PathBuf {
+    let mut out = Vec::default();
+    for part in path.as_ref().components() {
+        if let Component::Normal(val) = part {
+            let updated = if let Some(mut val_str) = val.to_str() {
+                val_str = strip_draft_indicator(&val_str);
+                OsStr::new(val_str)
+            } else {
+                val
+            };
+
+            out.push(Component::Normal(updated))
+        } else {
+            out.push(part)
+        }
+    }
+    out.iter().collect()
+}
+
+fn strip_draft_indicator(s: &str) -> &str {
+    if let Some(stripped) = s.strip_suffix("?") {
+        stripped
+    } else {
+        s
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn cleans_drafts() {
+        let p = PathBuf::from("02_hmm/05_here?/02_sure?/06_normal.md");
+        assert_eq!(
+            clean_path(p),
+            PathBuf::from("02_hmm/05_here/02_sure/06_normal.md")
+        )
+    }
 }

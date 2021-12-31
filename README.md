@@ -9,19 +9,23 @@ A preprocessor that generates a summary from the file structure of your book rat
 
 Frequently, you want the organization of your files to simply be mirrored in the `SUMMARY.md` file rather than have to manually set it yourself. We can automate this by following a few conventions:
 
-- A page that represents the parent folder is called `00.md`
-- Pages and folders are ordered by the numbers in the filename, i.e. `04_cli.md` comes before  `05_agile.md` and the `05_team` folder comes before the `06_docs` folder.
-- Partials start with an underscore (i.e. `_shared.md`) and should not be included in the table of contents. 
-- Page names (rendered in the navigation) come from the first `H1` header of the page. An error is thrown if there is no title.
-- Prefix chapters start with `00` and suffix chapters start with `ZZ`.
-- Separators are any file that ends in `__` (i.e. `02__` or even `02________`).
+| Convention          | Example                                                  | Result                                                       |
+| ------------------- | -------------------------------------------------------- | ------------------------------------------------------------ |
+| Chapter index       | `00.md`                                                  | Represents the page for the parent folder                    |
+| Sorted by filenames | `04_cli.md` or `06_docs/`                                | Use leading numbers to sort pages (though not strictly enforced to have numbers in the filenames like this) |
+| Partials            | `_shared.md`                                             | Partials start with an underscore and will be ignored in the summary |
+| Page titles         | `# Page Title`                                           | Page names (rendered in the navigation) come from the first `H1` header of the page. An error is thrown if there is no title. |
+| Prefix chapters     | `00_prologue.md`                                         | Prefix chapters start with `00` (excluding `00.md`)          |
+| Suffix chapters     | `ZZ_final_words.md`                                      | Suffix chapters start with `ZZ`                              |
+| Draft chapters      | `04_advanced_configuration?.md` or `05_administration?/` | Draft pages and folders end with `?`                         |
+| Separators          | `02__` or `02___________`                                | Separators are files that end with two underscores `__`      |
 
 These conventions should create a filesystem structure that, when sorted alphanumerically, is the same in the final render.
 
 ```
 00_prologue.md                    → prefix chapter
 01_intro.md
-02_install.md/
+02_install/
 ├─ 00.md                          → chapter index 
 ├─ 01_linux.md
 ├─ 02_mac.md                      ↓ files sorted naturally
@@ -32,10 +36,13 @@ These conventions should create a filesystem structure that, when sorted alphanu
 03_caveat.md
 04_usage.md/
 ├─ 00.md
-├─ 01_basics.md/
+├─ 01_basics/
 │  ├─ 00.md
 │  ├─ 01_setup.md
 │  ├─ 02_monitoring.md
+05_administration?/               → draft chapter
+├─ 00.md
+├─ 01_install?.md                 → ndraft chapter
 ZZ_final_words.md                 → suffix chapter
 ```
 

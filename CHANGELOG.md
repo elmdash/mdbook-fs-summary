@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 * [#2](https://github.com/elmdash/mdbook-fs-summary/issues/2) Provide support for chapter separators using files that end in `__`
 * [#3](https://github.com/elmdash/mdbook-fs-summary/issues/3) Provide support for prefix/suffix chapters using `00` and `ZZ` filename prefixes
+* [#5](https://github.com/elmdash/mdbook-fs-summary/issues/5) Provide support for draft chapters
 
 ### Changed
 

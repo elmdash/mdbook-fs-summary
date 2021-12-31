@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 <!-- next-header -->
 ## [Unreleased] - Coming Soon
 
+This is a bigger release aiming to encompass more of the default `SUMMARY.md` behaviors provided by mdbook. 
+
+> ⚠️ Breaks links hardcoded to `00.html` to prefer `index.html` by default.
+
 ### Added
 
 * [#2](https://github.com/elmdash/mdbook-fs-summary/issues/2) Provide support for chapter separators using files that end in `__`

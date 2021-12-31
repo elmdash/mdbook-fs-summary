@@ -35,7 +35,7 @@ These conventions should create a filesystem structure that, when sorted alphanu
 ├─ 05_post_install.md
 ├─ _common_install_tips.md        → ignored "partial"
 03_caveat.md
-04_g_#.md                     → Part title 
+04_guide_#.md                         → part title 
 05_usage.md/
 ├─ 00.md
 ├─ 01_basics/

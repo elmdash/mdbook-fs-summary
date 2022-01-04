@@ -52,7 +52,7 @@ ZZ_final_words.md                 → suffix chapter
 
 You _must_ create a dummy `SUMMARY.md`, otherwise `mdbook` will error out before the preprocessors get called. (The contents aren't important. It can just have `# SUMMARY` as the first line.)
 
-Install the project with cargo. The current version is <code>v<span id="version">0.2.0</span></code>.
+Install the project with cargo. The current version is <code>v<span id="version">0.2.1</span></code>.
 
 ```
 cargo install mdbook-fs-summary

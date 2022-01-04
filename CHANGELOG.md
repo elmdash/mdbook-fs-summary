@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 <!-- next-header -->
 ## [Unreleased] - Coming Soon
 
+## [0.2.1] - 2022-01-04
+
 ### Changed
 
 * Add clean paths configuration option to allow disabling the path changes which currently breaks mdbook's partials handling.
@@ -51,7 +53,8 @@ This is a bigger release aiming to encompass more of the default `SUMMARY.md` be
 * Basic README usage and installation
 
 <!-- next-url -->
-[Unreleased]: https://github.com/elmdash/mdbook-fs-summary/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/elmdash/mdbook-fs-summary/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/elmdash/mdbook-fs-summary/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/elmdash/mdbook-fs-summary/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/elmdash/mdbook-fs-summary/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/Downstream/downsync/compare/v0.1.0...v0.1.1

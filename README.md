@@ -58,25 +58,58 @@ Install the project with cargo. The current version is <code>v<span id="version"
 cargo install mdbook-fs-summary
 ```
 
-There are no configurable options right now.
+There aren't a lot of configurations right now.
 
 ```toml
 # book.toml
 
 [preprocessor.fs-summary]
+# (default: true)
+clean-paths = true
+
+# other preprocessors will naturally need to 
+# run after the summary has been generated 
+[preprocessor.links]
+after = ["fs-summary"] 
 ```
 
-### URL Handling and Number Prefixes
+### Clean Paths
 
-The number prefixes are mostly just a convention for keeping files and folders properly sorted. We don't rely on these numbers internally to generate a summary. You can opt out of having these numbers altogether; your files will just be sorted alphanumerically. 
+We are using filename indicators to apply configurations to the generated summary. That's not ideal, so they are stripped to their natural paths.
 
-Since these numbers are just our internal convention for sorting, we don't want to expose these numbers in the URLs produced by mdbook. So in order to strip them out, we have to specify what they are. 
+Instead of: 
 
-Currently the convention is this: 
+```
+http://localhost:3000/02_team/05_onboarding.html
+```
+
+We strip the numeric prefixes used for sorting and any other artificial indicators.
+
+```
+http://localhost:3000/team/onboarding.html
+```
+
+> ⚠️ Cleaning paths currently breaks support for the default links preprocessor provided by mdbook. [See this pull request.](https://github.com/rust-lang/mdBook/pull/1716) It is recommended to disable clean paths until this is resolved if you intend to use partials.
+
+##### Disable Clean Paths
+
+You can turn off this behavior. 
+
+```toml
+[preprocessor.fs-summary]
+clean-paths = false
+
+[preprocessor.links]
+after = ["fs-summary"]
+```
+
+##### Numeric Prefix Format
+
+This processor doesn't dictate any special format for numeric prefixes used for sorting except when cleaning paths. Currently the convention is this: 
 
 > If the filename starts with 2 or 3 numbers or upper case letters followed by an underscore, they'll get stripped in the resulting URLs. 
 
-> ⚠️ This currently breaks support for the default links preprocessor provided by mdbook. [See this pull request.](https://github.com/rust-lang/mdBook/pull/1716)
+This is just something to note if you plan on some other sorting strategy for your filenames.
 
 ### Alternatives
 

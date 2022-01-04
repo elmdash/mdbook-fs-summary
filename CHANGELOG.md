@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 <!-- next-header -->
 ## [Unreleased] - Coming Soon
 
+### Changed
+
+* Add clean paths configuration option to allow disabling the path changes which currently breaks mdbook's partials handling.
+
 ## [0.2.0] - 2021-12-31
 
 This is a bigger release aiming to encompass more of the default `SUMMARY.md` behaviors provided by mdbook and establish more conventions.

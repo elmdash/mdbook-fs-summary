@@ -3,8 +3,7 @@ use mdbook::preprocess::CmdPreprocessor;
 use semver::{Version, VersionReq};
 
 mod book;
-
-const PREPROCESSOR_NAME: &str = "fs-summary";
+mod config;
 
 fn main() {
     check_args();
@@ -25,7 +24,7 @@ fn handle_preprocessing() -> Result<(), Error> {
         eprintln!(
             "Warning: The {} plugin was built against version {} of mdbook, \
              but we're being called from version {}",
-            PREPROCESSOR_NAME,
+            config::PREPROCESSOR_NAME,
             mdbook::MDBOOK_VERSION,
             ctx.mdbook_version
         );

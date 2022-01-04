@@ -1,17 +1,16 @@
+use crate::config::Config;
 use anyhow::{Context, Result};
-use lazy_static::lazy_static;
 use mdbook::book::{Book, BookItem, Chapter, SectionNumber};
 use mdbook::preprocess::PreprocessorContext;
-use regex::Regex;
 use std::collections::BTreeMap;
-use std::ffi::OsString;
 use std::fs;
-use std::path::{Component, Path, PathBuf};
+use std::path::{Path, PathBuf};
 
 pub fn load_book(ctx: &PreprocessorContext) -> Result<Book> {
+    let conf = Config::new(ctx);
     let root = ctx.config.book.src.as_path();
 
-    let mut sections = load_book_items(root, &Vec::default(), root)?;
+    let mut sections = load_book_items(root, &Vec::default(), root, &conf)?;
     apply_section_numbers(&mut sections, &Vec::default());
     let mut book = Book::default();
     for section in sections {
@@ -64,6 +63,7 @@ fn load_book_items<P: AsRef<Path>>(
     path: P,
     crumbs: &Vec<String>,
     book_src: &Path,
+    conf: &Config,
 ) -> Result<Vec<BookItem>> {
     // We can't say we're getting the directory contents in order. That means we have to sort them
     // ourselves. Using a BTreeMap gives us that, but also it means the whole tree won't be in
@@ -76,7 +76,7 @@ fn load_book_items<P: AsRef<Path>>(
         if path == summary_path {
             continue;
         }
-        if let Some(item) = load_book_item(entry, crumbs, book_src)? {
+        if let Some(item) = load_book_item(entry, crumbs, book_src, conf)? {
             map.insert(path, item);
         }
     }
@@ -87,6 +87,7 @@ fn load_book_item(
     entry: fs::DirEntry,
     crumbs: &Vec<String>,
     book_src: &Path,
+    conf: &Config,
 ) -> Result<Option<BookItem>> {
     let ft = entry.file_type()?;
     if ft.is_dir() {
@@ -96,7 +97,7 @@ fn load_book_item(
         if !index_file.exists() {
             // directories with no markdown files are skipped (might contain other assets)
             // so it may not be an error not to have an index file anyway
-            let found_items = load_book_items(entry.path(), &Vec::default(), book_src)?;
+            let found_items = load_book_items(entry.path(), &Vec::default(), book_src, conf)?;
             if found_items.is_empty() {
                 return Ok(None);
             }
@@ -117,7 +118,7 @@ fn load_book_item(
         let name = load_chapter_title(index_file.as_path())?;
         let mut parent_names = crumbs.clone();
         parent_names.push(name.clone());
-        let sub_items = load_book_items(entry.path(), &parent_names, book_src)?;
+        let sub_items = load_book_items(entry.path(), &parent_names, book_src, conf)?;
 
         if dir_name.ends_with("()") {
             return Ok(Some(BookItem::Chapter({
@@ -131,7 +132,7 @@ fn load_book_item(
             .with_context(|| format!("could not read file: {}", index_file.as_path().display()))?;
 
         let source_path = index_file.strip_prefix(book_src)?;
-        let mut cleaned_path = clean_path(source_path);
+        let mut cleaned_path = conf.clean_path(source_path);
         cleaned_path.set_file_name("index.md");
 
         return Ok(Some(BookItem::Chapter({
@@ -206,7 +207,7 @@ fn load_book_item(
 
         return Ok(Some(BookItem::Chapter({
             let mut c = Chapter::new(&name, content, source_path, crumbs.clone());
-            c.path = Some(clean_path(source_path));
+            c.path = Some(conf.clean_path(source_path));
             c.number = number;
             c
         })));
@@ -233,50 +234,4 @@ fn load_chapter_title<P: AsRef<Path>>(path: P) -> Result<String> {
             path.as_ref().display()
         ))
     })
-}
-
-/// Removes indicators from the path (like question marks).
-/// This allows for showing a different path than the actual source path.
-fn clean_path<P: AsRef<Path>>(path: P) -> PathBuf {
-    let mut out = PathBuf::new();
-    for part in path.as_ref().components() {
-        if let Component::Normal(val) = part {
-            if let Some(val_str) = val.to_str() {
-                let mut cleaned = String::from(val_str);
-                strip_draft_indicator(&mut cleaned);
-                strip_numbering_prefix(&mut cleaned);
-                out.push(OsString::from(cleaned));
-                continue;
-            }
-        }
-
-        out.push(OsString::from(part.as_os_str()));
-    }
-    out
-}
-
-fn strip_draft_indicator(s: &mut String) {
-    if let Some(stripped) = s.strip_suffix("()") {
-        *s = stripped.to_string();
-    }
-}
-
-fn strip_numbering_prefix(s: &mut String) {
-    lazy_static! {
-        static ref RE: Regex = Regex::new("^[0-9A-Z]{2,3}_").unwrap();
-    }
-
-    let stripped = RE.replace(s, "");
-    *s = String::from(stripped);
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn cleans_drafts() {
-        let p = PathBuf::from("02_hmm/05_here()/02_sure()/06_normal.md");
-        assert_eq!(clean_path(p), PathBuf::from("hmm/here/sure/normal.md"))
-    }
 }

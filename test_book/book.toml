@@ -2,7 +2,8 @@
 title = "Test FS Summary"
 
 [preprocessor.links]
-after = ["make-summary"]
+after = ["fs-summary"]
 
-[preprocessor.make-summary]
+[preprocessor.fs-summary]
 command = "../target/debug/mdbook-fs-summary"
+clean-paths = false

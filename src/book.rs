@@ -20,7 +20,7 @@ pub fn load_book(ctx: &PreprocessorContext) -> Result<Book> {
     Ok(book)
 }
 
-fn apply_section_numbers(chapters: &mut [BookItem], parent_num: &Vec<u32>) {
+fn apply_section_numbers(chapters: &mut [BookItem], parent_num: &[u32]) {
     let mut i = 0_u32;
     for chapter in chapters {
         match chapter {
@@ -47,7 +47,7 @@ fn apply_section_numbers(chapters: &mut [BookItem], parent_num: &Vec<u32>) {
                     continue;
                 }
                 i += 1;
-                let mut num = parent_num.clone();
+                let mut num = parent_num.to_owned();
                 num.push(i);
                 apply_section_numbers(&mut chap.sub_items, &num);
                 chap.number = Some(SectionNumber(num));
@@ -61,7 +61,7 @@ fn apply_section_numbers(chapters: &mut [BookItem], parent_num: &Vec<u32>) {
 
 fn load_book_items<P: AsRef<Path>>(
     path: P,
-    crumbs: &Vec<String>,
+    crumbs: &[String],
     book_src: &Path,
     conf: &Config,
 ) -> Result<Vec<BookItem>> {
@@ -85,7 +85,7 @@ fn load_book_items<P: AsRef<Path>>(
 
 fn load_book_item(
     entry: fs::DirEntry,
-    crumbs: &Vec<String>,
+    crumbs: &[String],
     book_src: &Path,
     conf: &Config,
 ) -> Result<Option<BookItem>> {
@@ -116,7 +116,7 @@ fn load_book_item(
         };
 
         let name = load_chapter_title(index_file.as_path())?;
-        let mut parent_names = crumbs.clone();
+        let mut parent_names = crumbs.to_owned();
         parent_names.push(name.clone());
         let sub_items = load_book_items(entry.path(), &parent_names, book_src, conf)?;
 
@@ -145,7 +145,7 @@ fn load_book_item(
     if ft.is_file() {
         // for numbered chapters, we initially define it as `None` as they are calculated later
         let mut number = None;
-        let path = entry.path().to_path_buf();
+        let path = entry.path();
 
         let filename = if let Some(f) = path.file_name() {
             f.to_string_lossy()
@@ -164,14 +164,14 @@ fn load_book_item(
             return Ok(Some(BookItem::Separator));
         }
 
-        if base_filename.ends_with("#") {
+        if base_filename.ends_with('#') {
             return Ok(Some(BookItem::PartTitle(load_chapter_title(
                 path.as_path(),
             )?)));
         }
 
         // skip partials
-        if filename.starts_with("_") {
+        if filename.starts_with('_') {
             return Ok(None);
         }
         // skip non-markdown files
@@ -195,7 +195,7 @@ fn load_book_item(
 
         if base_filename.ends_with("()") {
             return Ok(Some(BookItem::Chapter({
-                let mut c = Chapter::new_draft(&name, crumbs.clone());
+                let mut c = Chapter::new_draft(&name, crumbs.to_owned());
                 c.number = number;
                 c
             })));
@@ -206,7 +206,7 @@ fn load_book_item(
             .with_context(|| format!("could not read file: {}", path.as_path().display()))?;
 
         return Ok(Some(BookItem::Chapter({
-            let mut c = Chapter::new(&name, content, source_path, crumbs.clone());
+            let mut c = Chapter::new(&name, content, source_path, crumbs.to_owned());
             c.path = Some(conf.clean_path(source_path));
             c.number = number;
             c

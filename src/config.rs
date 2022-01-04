@@ -12,14 +12,13 @@ pub struct Config {
 
 impl Config {
     pub fn new(ctx: &PreprocessorContext) -> Self {
-        let clean_paths = loop {
-            if let Some(cfg) = ctx.config.get_preprocessor(PREPROCESSOR_NAME) {
-                if let Some(val) = cfg.get("clean-paths") {
-                    break val.as_bool().unwrap_or(true);
-                }
+        let mut clean_paths = true;
+        if let Some(cfg) = ctx.config.get_preprocessor(PREPROCESSOR_NAME) {
+            if let Some(val) = cfg.get("clean-paths") {
+                clean_paths = val.as_bool().unwrap_or(true);
             }
-            break true;
-        };
+        }
+
         Self { clean_paths }
     }
 

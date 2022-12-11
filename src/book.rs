@@ -219,19 +219,31 @@ fn load_book_item(
 fn load_chapter_title<P: AsRef<Path>>(path: P) -> Result<String> {
     let contents = fs::read_to_string(path.as_ref())
         .with_context(|| format!("could not read file: {}", path.as_ref().display()))?;
-    let mut title = None;
-    for l in contents.lines() {
-        if l.starts_with("# ") {
-            if let Some(t) = l.get(2..) {
-                title = Some(String::from(t))
-            }
-            break;
+    let markdown = contents
+        .lines()
+        .filter(|line| line.starts_with("# "))
+        .map(|line| line.get(2..))
+        .next()
+        .flatten()
+        .ok_or_else(|| {
+            anyhow::Error::msg(format!(
+                "could not find H1 title from: {}",
+                path.as_ref().display()
+            ))
+        })?;
+    let parser = pulldown_cmark::Parser::new(markdown);
+
+    fn pulldown_event_to_text(event: pulldown_cmark::Event) -> Option<String> {
+        match event {
+            pulldown_cmark::Event::Text(text) => Some(text.into_string()),
+            pulldown_cmark::Event::Code(text) => Some(text.into_string()),
+            pulldown_cmark::Event::SoftBreak => Some(" ".to_string()),
+            _ => None,
         }
     }
-    title.ok_or_else(|| {
-        anyhow::Error::msg(format!(
-            "could not find H1 title from: {}",
-            path.as_ref().display()
-        ))
-    })
+    let text: String = parser
+        .filter_map(|event| pulldown_event_to_text(event))
+        .collect();
+
+    Ok(text)
 }

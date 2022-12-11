@@ -67,7 +67,8 @@ mod tests {
 
     #[test]
     fn cleans_drafts() {
+        let conf = Config { clean_paths: true };
         let p = PathBuf::from("02_hmm/05_here()/02_sure()/06_normal.md");
-        assert_eq!(clean_path(p), PathBuf::from("hmm/here/sure/normal.md"))
+        assert_eq!(conf.clean_path(p), PathBuf::from("hmm/here/sure/normal.md"))
     }
 }
